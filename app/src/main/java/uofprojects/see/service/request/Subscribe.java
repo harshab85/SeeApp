@@ -1,0 +1,54 @@
+package uofprojects.see.service.request;
+
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.Iterator;
+import java.util.Set;
+
+import uofprojects.see.service.response.AbstractResponse;
+import uofprojects.see.service.response.SubscribeResponse;
+import uofprojects.see.util.ServiceUtil;
+import uofprojects.see.util.StorageUtil;
+
+/**
+ * Created by home on 2015-03-20.
+ */
+public class Subscribe extends AbstractRequest {
+
+    private Set<String> channelNames;
+
+    public Subscribe(Set<String> channelNames){
+        this.channelNames = channelNames;
+    }
+
+    @Override
+    public AbstractResponse threadLogic() {
+        try {
+            JSONObject params = new JSONObject();
+
+            JSONArray channelNamesArray = new JSONArray();
+            Iterator<String> iterChannelNames = this.channelNames.iterator();
+            while(iterChannelNames.hasNext()){
+                String channel = iterChannelNames.next();
+                channelNamesArray.put(channel);
+            }
+
+            params.put(ServiceUtil.PayloadKeys.ChannelNames.getKey(), channelNamesArray);
+            params.put(ServiceUtil.PayloadKeys.UserId.getKey(), StorageUtil.getStringValue(ServiceUtil.PayloadKeys.UserId.getKey()));
+            StringEntity stringEntity = new StringEntity(params.toString(), ServiceUtil.DEFAULT_CHARSET);
+
+            HttpPost post = ServiceUtil.getPostRequest(ServiceUtil.SUBSCRIBE, stringEntity);
+            JSONObject result = executePost(post);
+
+            return new SubscribeResponse(result.getString(ServiceUtil.ResponseKeys.Error.getKey()), result.getBoolean(ServiceUtil.ResponseKeys.Success.getKey()));
+        }
+        catch (Exception e) {
+
+        }
+
+        return new SubscribeResponse("Subscribe failed!", false);
+    }
+}
