@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import see.uoftprojects.seeapp.R;
-import uofprojects.see.config.AppConfig;
+import uofprojects.see.util.ServiceUtil;
 
 public class VideoSendActivity extends Activity implements RtspClient.Callback, Session.Callback, SurfaceHolder.Callback {
 
@@ -86,14 +86,14 @@ public class VideoSendActivity extends Activity implements RtspClient.Callback, 
 
         // We parse the URI written in the Editext
         Pattern uri = Pattern.compile("rtsp://(.+):(\\d+)/(.+)");
-        Matcher m = uri.matcher(AppConfig.STREAM_URL);
+        Matcher m = uri.matcher(ServiceUtil.STREAM_URL);
         m.find();
         ip = m.group(1);
         port = m.group(2);
         path = m.group(3);
 
-        mClient.setCredentials(AppConfig.PUBLISHER_USERNAME,
-                AppConfig.PUBLISHER_PASSWORD);
+        mClient.setCredentials(ServiceUtil.PUBLISHER_USERNAME,
+                ServiceUtil.PUBLISHER_PASSWORD);
         mClient.setServerAddress(ip, Integer.parseInt(port));
         mClient.setStreamPath("/" + path);
     }

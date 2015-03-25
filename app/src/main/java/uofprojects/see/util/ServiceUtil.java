@@ -16,19 +16,24 @@ import java.net.URL;
  */
 public final class ServiceUtil {
 
+    // WOWZA SERVER
+    public static final String STREAM_URL = "rtsp://52.10.125.217:1935/live/myStream";
+    public static final String PUBLISHER_USERNAME = "see";
+    public static final String PUBLISHER_PASSWORD = "see";
+
+    // REST SERVICE
+    public static final String LOCAL_URL_HOST = "http://100.64.183.209:8080";
+    public static final String REGISTER_URL = LOCAL_URL_HOST + "/SeeService/see/register";
+    public static final String CREATE_CHANNEL = LOCAL_URL_HOST + "/SeeService/see/createChannel";
+    public static final String GET_CHANNELS = LOCAL_URL_HOST + "/SeeService/see/getChannels";
+    public static final String SUBSCRIBE = LOCAL_URL_HOST + "/SeeService/see/subscribe";
+    public static final String POLL = LOCAL_URL_HOST + "/SeeService/see/poll";
+
+
     public static final String DEFAULT_CHARSET = "UTF-8";
 
-    public static final String LOCAL_URL_HOST = "http://100.64.183.209:8080";
 
-    public static final String REGISTER_URL = LOCAL_URL_HOST + "/SeeService/see/register";
 
-    public static final String CREATE_CHANNEL = LOCAL_URL_HOST + "/SeeService/see/createChannel";
-
-    public static final String GET_CHANNELS = LOCAL_URL_HOST + "/SeeService/see/getChannels";
-
-    public static final String SUBSCRIBE = LOCAL_URL_HOST + "/SeeService/see/subscribe";
-
-    public static final String POLL = LOCAL_URL_HOST + "/SeeService/see/poll";
 
     public enum PayloadKeys{
         UserId("userId"), ChannelName("channelName"), ChannelNames("channelNames"),
