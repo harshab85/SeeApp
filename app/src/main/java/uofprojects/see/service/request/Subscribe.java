@@ -2,12 +2,7 @@ package uofprojects.see.service.request;
 
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.Iterator;
-import java.util.Set;
-
 import uofprojects.see.service.response.AbstractResponse;
 import uofprojects.see.service.response.SubscribeResponse;
 import uofprojects.see.util.ServiceUtil;
@@ -18,10 +13,10 @@ import uofprojects.see.util.StorageUtil;
  */
 public class Subscribe extends AbstractRequest {
 
-    private Set<String> channelNames;
+    private String newSubscription;
 
-    public Subscribe(Set<String> channelNames){
-        this.channelNames = channelNames;
+    public Subscribe(String newSubscription){
+        this.newSubscription = newSubscription;
     }
 
     @Override
@@ -29,15 +24,23 @@ public class Subscribe extends AbstractRequest {
         try {
             JSONObject params = new JSONObject();
 
-            JSONArray channelNamesArray = new JSONArray();
-            Iterator<String> iterChannelNames = this.channelNames.iterator();
+            //JSONArray channelNamesArray = new JSONArray();
+            /*Iterator<String> iterChannelNames = this.channelNames.iterator();
             while(iterChannelNames.hasNext()){
                 String channel = iterChannelNames.next();
                 channelNamesArray.put(channel);
-            }
+            }*/
+
+            /*JSONObject object = new JSONObject();
 
             params.put(ServiceUtil.PayloadKeys.ChannelNames.getKey(), channelNamesArray);
-            params.put(ServiceUtil.PayloadKeys.UserId.getKey(), StorageUtil.getStringValue(ServiceUtil.PayloadKeys.UserId.getKey()));
+            params.put(ServiceUtil.PayloadKeys.UserId.getKey(), StorageUtil.getStringValue(ServiceUtil.PayloadKeys.UserId.getKey()));*/
+
+            String requesterChannelName = StorageUtil.getStringValue(ServiceUtil.PayloadKeys.ChannelName.getKey());
+
+            params.put(ServiceUtil.PayloadKeys.RequesterChannelName.getKey(), requesterChannelName);
+            params.put(ServiceUtil.PayloadKeys.NewSubscription.getKey(), this.newSubscription);
+
             StringEntity stringEntity = new StringEntity(params.toString(), ServiceUtil.DEFAULT_CHARSET);
 
             HttpPost post = ServiceUtil.getPostRequest(ServiceUtil.SUBSCRIBE, stringEntity);

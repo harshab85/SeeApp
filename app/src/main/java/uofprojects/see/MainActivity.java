@@ -24,9 +24,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActivityUtil.setMainActivity(this);
+        //ActivityUtil.setMainActivity(this);
 
-        if(StorageUtil.getBooleanValue(StorageUtil.SharedPreferenceKeys.Registered.getKey())){
+        loadLandingPageActivity();
+
+        /*if(StorageUtil.getBooleanValue(StorageUtil.SharedPreferenceKeys.Registered.getKey())){
             loadLandingPageActivity();
         }
 
@@ -56,7 +58,7 @@ public class MainActivity extends Activity {
                     loadLandingPageActivity();
                 }
             }
-        });
+        });*/
 
     }
 

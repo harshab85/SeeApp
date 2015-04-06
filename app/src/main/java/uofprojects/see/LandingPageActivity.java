@@ -1,10 +1,12 @@
 package uofprojects.see;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,9 +40,19 @@ public class LandingPageActivity extends Activity {
 
         ActivityUtil.setMainActivity(this);
 
-
+        final Button createChannel = (Button) findViewById(R.id.create_channel);
         final EditText channelName_EditText = (EditText) findViewById(R.id.channel_name);
-        channelName_EditText.setText("Enter Channel Name");
+
+        String channelName = StorageUtil.getStringValue(ServiceUtil.PayloadKeys.ChannelName.getKey());
+        if(channelName != null && !channelName.isEmpty()) {
+            channelName_EditText.setText("Your Channel Name is : " + channelName);
+            channelName_EditText.setEnabled(false);
+
+            createChannel.setVisibility(View.GONE);
+        }
+        else {
+            channelName_EditText.setText("Enter Channel Name");
+        }
 
         Set<String> subscriptions = StorageUtil.getStringValues(ServiceUtil.PayloadKeys.Subscriptions.getKey());
 
@@ -51,7 +63,7 @@ public class LandingPageActivity extends Activity {
             subscriptionList.setVisibility(View.VISIBLE);
             subscriptionText.setVisibility(View.VISIBLE);
 
-            List<String> subs = new ArrayList<String>(subscriptions);
+            List<String> subs = new ArrayList<>(subscriptions);
 
             ArrayAdapter<String> subscriptionListAdapter = new ArrayAdapter<String>(ActivityUtil.getMainActivity(),
                     android.R.layout.simple_list_item_1, android.R.id.text1, subs);
@@ -70,8 +82,7 @@ public class LandingPageActivity extends Activity {
             }
         });
 
-        Button create = (Button) findViewById(R.id.create_channel);
-        create.setOnClickListener(new View.OnClickListener() {
+        createChannel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -104,8 +115,8 @@ public class LandingPageActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                //imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
                 GetAvailableChannels getAvailableChannels = new GetAvailableChannels();
                 getAvailableChannels.run();
@@ -122,6 +133,12 @@ public class LandingPageActivity extends Activity {
                 String channelName = StorageUtil.getStringValue(ServiceUtil.PayloadKeys.ChannelName.getKey());
                 if (channelName != null) {
                     channelsList.remove(channelName.trim());
+                }
+
+                // remove subscribed channels
+                Set<String> currentSubscriptions = StorageUtil.getStringValues(ServiceUtil.PayloadKeys.Subscriptions.getKey());
+                if(currentSubscriptions != null && !currentSubscriptions.isEmpty()){
+                    channelsList.removeAll(currentSubscriptions);
                 }
 
                 if (channelsList == null || channelsList.isEmpty()) {
@@ -161,16 +178,24 @@ public class LandingPageActivity extends Activity {
                                             int position, long id) {
 
                         SparseBooleanArray checked = channelList.getCheckedItemPositions();
-                        Set<String> newSubscriptions = new HashSet<String>();
+                        /*Set<String> newSubscriptions = new HashSet<String>();
                         for (int i = 0; i < checked.size(); i++) {
                             int pos = checked.keyAt(i);
                             if (checked.valueAt(i)) {
                                 String itemValue = (String) channelList.getItemAtPosition(position);
                                 newSubscriptions.add(itemValue);
                             }
+                        }*/
+
+                        String newSubscription = null;
+                        for (int i = 0; i < checked.size(); i++) {
+                            int pos = checked.keyAt(i);
+                            if (checked.valueAt(i)) {
+                                newSubscription = (String) channelList.getItemAtPosition(position);
+                            }
                         }
 
-                        Subscribe subscribe = new Subscribe(newSubscriptions);
+                        Subscribe subscribe = new Subscribe(newSubscription);
                         subscribe.run();
 
                         AbstractResponse response = subscribe.getResponse();
@@ -179,7 +204,11 @@ public class LandingPageActivity extends Activity {
                         }
                         else {
                             Set<String> oldSubscriptions = StorageUtil.getStringValues(ServiceUtil.PayloadKeys.Subscriptions.getKey());
-                            oldSubscriptions.addAll(newSubscriptions);
+                            if(oldSubscriptions == null){
+                                oldSubscriptions = new HashSet<String>(1);
+                            }
+
+                            oldSubscriptions.add(newSubscription);
                             StorageUtil.setStringValues(ServiceUtil.PayloadKeys.Subscriptions.getKey(), oldSubscriptions);
                             ArrayAdapter<String> subscriptionsAdapter = new ArrayAdapter<String>(ActivityUtil.getMainActivity(),
                                     android.R.layout.simple_list_item_1, android.R.id.text1, new ArrayList<String>(subscriptions));

@@ -22,22 +22,26 @@ public final class ServiceUtil {
     public static final String PUBLISHER_PASSWORD = "see";
 
     // REST SERVICE
-    public static final String LOCAL_URL_HOST = "http://100.64.183.209:8080";
-    public static final String REGISTER_URL = LOCAL_URL_HOST + "/SeeService/see/register";
-    public static final String CREATE_CHANNEL = LOCAL_URL_HOST + "/SeeService/see/createChannel";
-    public static final String GET_CHANNELS = LOCAL_URL_HOST + "/SeeService/see/getChannels";
-    public static final String SUBSCRIBE = LOCAL_URL_HOST + "/SeeService/see/subscribe";
-    public static final String POLL = LOCAL_URL_HOST + "/SeeService/see/poll";
+    public static final String LOCAL_URL_HOST = "http://100.64.183.209:8080/SeeService";
+    public static final String REMOTE_URL_HOST = "http://seedev.elasticbeanstalk.com";
+
+
+    public static final String REGISTER_URL = LOCAL_URL_HOST + "/see/register";
+
+
+    public static final String CREATE_CHANNEL = REMOTE_URL_HOST + "/see/createChannel";
+    public static final String GET_CHANNELS = REMOTE_URL_HOST + "/see/getChannels";
+    public static final String SUBSCRIBE = REMOTE_URL_HOST + "/see/subscribe";
+    public static final String POLL = REMOTE_URL_HOST + "/see/poll";
 
 
     public static final String DEFAULT_CHARSET = "UTF-8";
 
 
-
-
     public enum PayloadKeys{
         UserId("userId"), ChannelName("channelName"), ChannelNames("channelNames"),
-        Subscriptions("subscriptions");
+        Subscriptions("subscriptions"), RequesterChannelName("requestorChannelName"),
+        NewSubscription("newSubscription");
 
         private String key;
 

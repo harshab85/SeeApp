@@ -65,6 +65,7 @@ public final class NotificationHandler {
                         newVideoPath = response.getVideoUrl();
                     }
                     else {
+                        // Just for testing play video from phone when no streams are found
                         if (!videos.isEmpty()) {
                             newVideoPath = videos.get(0).filePath;
                         }
@@ -73,7 +74,7 @@ public final class NotificationHandler {
                     createNotification();
                 }
             }
-        }, 10, 15000);
+        }, 1000, 30000);
     }
 
     public boolean hasStarted(){
@@ -119,7 +120,7 @@ public final class NotificationHandler {
         }
     }
 
-
+    // Test method to load videos from the phone
     private List<VideoInfo> loadVideos(){
 
         List<VideoInfo> videos = new ArrayList<>();
